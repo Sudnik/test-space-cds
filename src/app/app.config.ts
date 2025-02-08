@@ -5,6 +5,8 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 
 import { routes } from './app.routes';
+import { provideStore } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,9 +14,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     providePrimeNG({
-      theme: {
-        preset: Aura,
-      },
+        theme: {
+            preset: Aura,
+        },
     }),
-  ],
+    provideStore(reducers, { metaReducers })
+],
 };
