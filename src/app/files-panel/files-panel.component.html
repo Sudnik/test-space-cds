@@ -1,0 +1,5 @@
+<p-drawer [(visible)]="visible" header="Drawer" position="bottom">
+  <app-file-uploader></app-file-uploader>
+  <app-files-table></app-files-table>
+</p-drawer>
+<p-button (click)="visible = true" icon="pi pi-arrow-right" label="Upload"/>
