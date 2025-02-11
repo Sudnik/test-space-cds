@@ -14,10 +14,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     providePrimeNG({
-        theme: {
-            preset: Aura,
-        },
+      theme: {
+        preset: Aura,
+      },
+      ripple: false,
     }),
-    provideStore(reducers, { metaReducers })
-],
+    provideStore(reducers, { metaReducers }),
+  ],
 };

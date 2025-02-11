@@ -1,18 +1,25 @@
-<p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+<p-table
+  [value]="files"
+  [size]="'small'"
+  showGridlines="true"
+  stripedRows="true"
+  [tableStyle]="{ width: '100%' }"
+  selectionMode="single"
+  [(selection)]="selectedFile"
+  [metaKeySelection]="true"
+  dataKey="id"
+  (onRowSelect)="onRowSelect($event)"
+>
   <ng-template #header>
     <tr>
-      <th>Code</th>
-      <th>Name</th>
-      <th>Category</th>
-      <th>Quantity</th>
+      <th>File</th>
+      <th>Date</th>
     </tr>
   </ng-template>
-  <ng-template #body let-product>
-    <tr>
-      <td>{{ product.code }}</td>
-      <td>{{ product.name }}</td>
-      <td>{{ product.category }}</td>
-      <td>{{ product.quantity }}</td>
+  <ng-template #body let-file>
+    <tr [pSelectableRow]="file">
+      <td>{{ file.name }}</td>
+      <td>{{ file.date }}</td>
     </tr>
   </ng-template>
 </p-table>

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import {
+  TableModule,
+  TableRowSelectEvent,
+  TableRowUnSelectEvent,
+} from 'primeng/table';
 
 @Component({
   selector: 'app-files-table',
@@ -8,46 +12,40 @@ import { TableModule } from 'primeng/table';
   styleUrl: './files-table.component.less',
 })
 export class FilesTableComponent implements OnInit {
-  products!: any[];
+  files!: any[];
+  selectedFile!: any;
 
   ngOnInit(): void {
-    this.products = [
+    this.files = [
       {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
+        id: 1,
+        name: 'TestFile1.json',
+        date: new Date().toLocaleString(),
       },
       {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
+        id: 2,
+        name: 'TestFile2.json',
+        date: new Date().toLocaleString(),
       },
       {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
+        id: 3,
+        name: 'TestFile3.json',
+        date: new Date().toLocaleString(),
+      },
+      {
+        id: 4,
+        name: 'TestFile4.json',
+        date: new Date().toLocaleString(),
+      },
+      {
+        id: 5,
+        name: 'TestFile5.json',
+        date: new Date().toLocaleString(),
       },
     ];
+  }
+
+  onRowSelect(event: TableRowSelectEvent) {
+    console.log('onRowSelect');
   }
 }
