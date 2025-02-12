@@ -1,12 +1,15 @@
 <p-toast position="bottom-center" />
 <p-fileupload
-  mode="basic"
-  name="demo[]"
   chooseIcon="pi pi-upload"
-  url="https://www.primefaces.org/cdn/api/upload.php"
-  accept="image/*"
-  maxFileSize="1000000"
-  (onUpload)="onBasicUploadAuto($event)"
+  mode="basic"
   [auto]="true"
-  chooseLabel="Browse"
+  name="demo[]"
+  url="https://www.primefaces.org/cdn/api/upload.php"
+  customUpload="true"
+  accept=".json"
+  maxFileSize="5242880"
+  (onUpload)="onUpload($event)"
+  (onSelect)="onSelect($event)"
+  (onError)="onError($event)"
+  (uploadHandler)="uploadHandler($event)"
 />

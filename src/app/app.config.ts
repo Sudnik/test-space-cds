@@ -6,7 +6,9 @@ import Aura from '@primeng/themes/aura';
 
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+//import { reducers, metaReducers } from './reducers';
+import { dataFilesReducer } from './reducers/data-files.reducer';
+import { collectionReducer } from './reducers/collection.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +21,7 @@ export const appConfig: ApplicationConfig = {
       },
       ripple: false,
     }),
-    provideStore(reducers, { metaReducers }),
+    //provideStore(reducers, { metaReducers }),
+    provideStore({ dataFiles: dataFilesReducer, collection: collectionReducer }),
   ],
 };
