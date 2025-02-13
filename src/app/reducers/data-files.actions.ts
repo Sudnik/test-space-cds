@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { DataFile } from '../files-table/data-files.model';
+import { AppInputData } from '../files-table/app-input-data.model';
 
 export const DataFilesActions = createActionGroup({
   source: 'DataFiles',
@@ -12,6 +12,6 @@ export const DataFilesActions = createActionGroup({
 export const DataFilesApiActions = createActionGroup({
   source: 'DataFiles API',
   events: {
-    'Retrieved DataFile List': props<{ dataFiles: ReadonlyArray<DataFile> }>(),
+    'Retrieved DataFile List': props<{ dataFiles: ReadonlyArray<AppInputData> }>(),
   },
 });

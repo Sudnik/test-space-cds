@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { DataFilesApiActions } from './data-files.actions';
-import { DataFile } from '../files-table/data-files.model';
+import { AppInputData } from '../files-table/app-input-data.model';
 
-export const initialState: ReadonlyArray<DataFile> = [];
+export const initialState: ReadonlyArray<AppInputData> = [];
 
 export const dataFilesReducer = createReducer(
   initialState,

@@ -1,8 +1,8 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { DataFile } from '../files-table/data-files.model';
+import { AppInputData } from '../files-table/app-input-data.model';
 
 export const selectDataFiles =
-  createFeatureSelector<ReadonlyArray<DataFile>>('dataFiles');
+  createFeatureSelector<ReadonlyArray<AppInputData>>('dataFiles');
 
 export const selectCollectionState =
   createFeatureSelector<ReadonlyArray<string>>('collection');

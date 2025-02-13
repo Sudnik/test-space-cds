@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import {
   FileSelectEvent,
@@ -10,6 +10,7 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { DataFile } from '../files-table/data-files.model';
+import { AppInputData } from '../files-table/app-input-data.model';
 
 @Component({
   selector: 'app-file-uploader',
@@ -19,30 +20,48 @@ import { DataFile } from '../files-table/data-files.model';
   providers: [MessageService],
 })
 export class FileUploaderComponent {
-  constructor(private messageService: MessageService) {}
+  @Output() add = new EventEmitter<DataFile>();
+  fileReader = new FileReader();
+  file: DataFile;
 
-  uploadHandler(event: FileUploadHandlerEvent) {
-    console.log('uploadHandler event!');
+  constructor(private messageService: MessageService) {
+    this.fileReader.onload = this.OnLoadFile.bind(this);
+    this.file = {
+      dataFileId: '',
+      fileName: '',
+      uploadDate: new Date(),
+      content: [],
+    };
   }
 
   onSelect(event: FileSelectEvent) {
-    let file: DataFile = {
-      id: '0',
-      category: event.files[0].name,
-      value: 0
-    };
-
-    console.log(`onSelect event! ${file.category}`);
+    console.log('onSelect event!');
   }
 
-  onUpload(event: FileUploadEvent) {
-    console.log('onUpload event!');
+  uploadHandler(event: FileUploadHandlerEvent) {
+    console.log('uploadHandler event!');
+    console.log(event);
+
+    this.file.dataFileId = '1';
+    this.file.fileName = event.files[0].name;
+
+    this.fileReader.readAsText(event.files[0]);
 
     this.messageService.add({
       severity: 'info',
       summary: 'Success',
       detail: 'File Uploaded with Auto Mode',
     });
+  }
+
+  private OnLoadFile(event: ProgressEvent<FileReader>) {
+    const jsonFileString = event.target?.result as string;
+    const jsonObject = JSON.parse(jsonFileString);
+    
+    this.file.uploadDate = new Date();
+    this.file.content = jsonObject as AppInputData[];
+
+    this.add.emit(this.file);
   }
 
   onError(event: FileUploadErrorEvent) {

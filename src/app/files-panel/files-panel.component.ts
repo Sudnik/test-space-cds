@@ -14,6 +14,7 @@ import {
   DataFilesActions,
   DataFilesApiActions,
 } from '../reducers/data-files.actions';
+import { DataFile } from '../files-table/data-files.model';
 
 @Component({
   selector: 'app-files-panel',
@@ -28,19 +29,21 @@ import {
 })
 export class FilesPanelComponent implements OnInit {
   visible: boolean = false;
-  books$;
-  bookCollection$;
+  dataFiles$;
+  dataFileCollection$;
 
   constructor(
     private dataFilesService: DataFilesService,
     private store: Store
   ) {
-    this.books$ = this.store.select(selectDataFiles);
-    this.bookCollection$ = this.store.select(selectDataFileCollection);
+    this.dataFiles$ = this.store.select(selectDataFiles);
+    this.dataFileCollection$ = this.store.select(selectDataFileCollection);
   }
 
-  onAdd(dataFileId: string) {
+  onAdd(dataFile: DataFile) {
+    let dataFileId = dataFile.dataFileId;
     this.store.dispatch(DataFilesActions.addDataFile({ dataFileId }));
+    this.dataFilesService.addDataFile(dataFile);
   }
 
   onRemove(dataFileId: string) {

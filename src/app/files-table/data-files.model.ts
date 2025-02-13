@@ -1,5 +1,8 @@
+import { AppInputData } from "./app-input-data.model";
+
 export interface DataFile {
-  id: string;
-  category: string;
-  value: number;
+  dataFileId: string;
+  fileName: string;
+  uploadDate: Date;
+  content: Array<AppInputData>;
 }
