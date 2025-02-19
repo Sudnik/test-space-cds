@@ -6,6 +6,6 @@
   <ng-template #header>
     <app-file-uploader (add)="onAdd($event)"></app-file-uploader>
   </ng-template>
-  <app-files-table></app-files-table>
+  <app-files-table [files]="(dataFiles$ | async)!"></app-files-table>
 </p-drawer>
 <p-button (click)="visible = true" icon="pi pi-arrow-right" label="Upload" />

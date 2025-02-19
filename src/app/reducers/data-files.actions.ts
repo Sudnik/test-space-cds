@@ -1,17 +1,17 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { AppInputData } from '../files-table/app-input-data.model';
+import { DataFileHeader } from '../files-table/data-file-headers.model';
 
 export const DataFilesActions = createActionGroup({
   source: 'DataFiles',
   events: {
-    'Add DataFile': props<{ dataFileId: string }>(),
-    'Remove DataFile': props<{ dataFileId: string }>(),
+    'Add DataFile': props<{ dataFileId: number }>(),
+    'Remove DataFile': props<{ dataFileId: number }>(),
   },
 });
 
 export const DataFilesApiActions = createActionGroup({
   source: 'DataFiles API',
   events: {
-    'Retrieved DataFile List': props<{ dataFiles: ReadonlyArray<AppInputData> }>(),
+    'Retrieved DataFile List': props<{ dataFiles: ReadonlyArray<DataFileHeader> }>(),
   },
 });

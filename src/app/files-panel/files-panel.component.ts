@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { DataFilesService } from '../files-table/data-files.service';
@@ -19,6 +20,7 @@ import { DataFile } from '../files-table/data-files.model';
 @Component({
   selector: 'app-files-panel',
   imports: [
+    CommonModule,
     DrawerModule,
     ButtonModule,
     FilesTableComponent,
@@ -46,7 +48,7 @@ export class FilesPanelComponent implements OnInit {
     this.dataFilesService.addDataFile(dataFile);
   }
 
-  onRemove(dataFileId: string) {
+  onRemove(dataFileId: number) {
     this.store.dispatch(DataFilesActions.removeDataFile({ dataFileId }));
   }
 

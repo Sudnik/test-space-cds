@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { DataFilesActions } from './data-files.actions';
 
-export const initialState: ReadonlyArray<string> = [];
+export const initialState: ReadonlyArray<number> = [];
 
 export const collectionReducer = createReducer(
   initialState,

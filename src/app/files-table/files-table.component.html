@@ -1,5 +1,5 @@
 <p-table
-  [value]="files"
+  [value]="tableDataSource"
   [size]="'small'"
   showGridlines="true"
   stripedRows="true"
@@ -7,19 +7,21 @@
   selectionMode="single"
   [(selection)]="selectedFile"
   [metaKeySelection]="true"
-  dataKey="id"
+  dataKey="dataFileId"
   (onRowSelect)="onRowSelect($event)"
 >
   <ng-template #header>
     <tr>
+      <th>ID</th>
       <th>File</th>
       <th>Date</th>
     </tr>
   </ng-template>
   <ng-template #body let-file>
     <tr [pSelectableRow]="file">
-      <td>{{ file.name }}</td>
-      <td>{{ file.date }}</td>
+      <td>{{ file.dataFileId }}</td>
+      <td>{{ file.fileName }}</td>
+      <td>{{ file.uploadDate }}</td>
     </tr>
   </ng-template>
 </p-table>

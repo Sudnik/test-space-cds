@@ -27,7 +27,7 @@ export class FileUploaderComponent {
   constructor(private messageService: MessageService) {
     this.fileReader.onload = this.OnLoadFile.bind(this);
     this.file = {
-      dataFileId: '',
+      dataFileId: 0,
       fileName: '',
       uploadDate: new Date(),
       content: [],
@@ -42,7 +42,7 @@ export class FileUploaderComponent {
     console.log('uploadHandler event!');
     console.log(event);
 
-    this.file.dataFileId = '1';
+    // this.file.dataFileId = '1';
     this.file.fileName = event.files[0].name;
 
     this.fileReader.readAsText(event.files[0]);

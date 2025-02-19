@@ -1,18 +1,18 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { AppInputData } from '../files-table/app-input-data.model';
+import { DataFileHeader } from '../files-table/data-file-headers.model';
 
 export const selectDataFiles =
-  createFeatureSelector<ReadonlyArray<AppInputData>>('dataFiles');
+  createFeatureSelector<ReadonlyArray<DataFileHeader>>('dataFiles');
 
 export const selectCollectionState =
-  createFeatureSelector<ReadonlyArray<string>>('collection');
+  createFeatureSelector<ReadonlyArray<number>>('collection');
 
 export const selectDataFileCollection = createSelector(
   selectDataFiles,
   selectCollectionState,
   (dataFiles, collection) => {
     return collection.map(
-      (id) => dataFiles.find((dataFile) => dataFile.id === id)!
+      (id) => dataFiles.find((dataFile) => dataFile.dataFileId === id)!
     );
   }
 );
