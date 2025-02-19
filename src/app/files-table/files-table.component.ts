@@ -13,12 +13,12 @@ import { DataFileHeader } from './data-file-headers.model';
   styleUrl: './files-table.component.less',
 })
 export class FilesTableComponent implements OnInit {
-  @Input() files: ReadonlyArray<DataFileHeader> = [];
+  @Input() files!: any;
   tableDataSource!: any;
   selectedFile!: any;
 
   ngOnInit(): void {
-    this.tableDataSource = this.files;
+    //this.tableDataSource = this.files;
   }
 
   onRowSelect(event: TableRowSelectEvent) {
