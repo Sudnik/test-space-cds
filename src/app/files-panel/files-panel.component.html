@@ -4,7 +4,7 @@
   [style]="{ height: '50%' }"
 >
   <ng-template #header>
-    <app-file-uploader (add)="onAdd($event)"></app-file-uploader>
+    <app-file-uploader (uploadDone)="onAdd($event)"></app-file-uploader>
   </ng-template>
   <app-files-table [files]="(dataFiles$ | async)!"></app-files-table>
 </p-drawer>

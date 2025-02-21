@@ -1,4 +1,3 @@
-//import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 //import { map } from 'rxjs/operators';
@@ -11,7 +10,16 @@ const localStorageFiles = 'fileTable';
 
 @Injectable({ providedIn: 'root' })
 export class DataFilesService {
-  //constructor(private http: HttpClient) {}
+
+  getSelectedDataFileId(): Observable<Array<number>> {
+    let item = localStorage.getItem(localStorageFiles);
+
+    if (item) {
+      return of([parseInt(item)]);
+    }
+
+    return of([]);
+  }
 
   getDataFiles(): Observable<Array<DataFileHeader>> {
     let jsonObject = new Array<DataFileHeader>();
@@ -22,19 +30,6 @@ export class DataFilesService {
     }
 
     return of(jsonObject);
-
-    //   let mock: Array<DataFile> = [
-    //     { id: '1', category: 'A', value: 30 },
-    //     { id: '2', category: 'B', value: 70 },
-    //     { id: '3', category: 'C', value: 50 },
-    //     { id: '4', category: 'D', value: 90 },
-    //     { id: '5', category: 'E', value: 20 },
-    //   ];
-    // return this.http
-    //   .get<{ items: DataFile[] }>(
-    //     'https://www...'
-    //   )
-    //   .pipe(map((dataFiles) => dataFiles.items || []));
   }
 
   addDataFile(jsonFile: DataFile) {

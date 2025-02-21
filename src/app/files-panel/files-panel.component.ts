@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 import {
   selectDataFileCollection,
   selectDataFiles,
+  selectNewFileId,
 } from '../reducers/data-files.selectors';
 import {
   DataFilesActions,
@@ -33,6 +34,7 @@ export class FilesPanelComponent implements OnInit {
   visible: boolean = false;
   dataFiles$;
   dataFileCollection$;
+  newFileId!: number;
 
   constructor(
     private dataFilesService: DataFilesService,
@@ -40,12 +42,21 @@ export class FilesPanelComponent implements OnInit {
   ) {
     this.dataFiles$ = this.store.select(selectDataFiles);
     this.dataFileCollection$ = this.store.select(selectDataFileCollection);
+    this.store.select(selectNewFileId).subscribe((dataFileId) => {
+      this.newFileId = dataFileId;
+    });
   }
 
   onAdd(dataFile: DataFile) {
-    let dataFileId = dataFile.dataFileId;
+    let dataFileId = this.newFileId;
+    dataFile.dataFileId = dataFileId;
+    this.store.dispatch(DataFilesApiActions.addDataFile({ dataFile }));
     this.store.dispatch(DataFilesActions.addDataFile({ dataFileId }));
     this.dataFilesService.addDataFile(dataFile);
+  }
+
+  onGet(dataFileId: number) {
+    this.store.dispatch(DataFilesActions.getDataFile({ dataFileId }));
   }
 
   onRemove(dataFileId: number) {
@@ -58,6 +69,14 @@ export class FilesPanelComponent implements OnInit {
       .subscribe((dataFiles) =>
         this.store.dispatch(
           DataFilesApiActions.retrievedDataFileList({ dataFiles })
+        )
+      );
+
+    this.dataFilesService
+      .getSelectedDataFileId()
+      .subscribe((selectedDataFileId) =>
+        this.store.dispatch(
+          DataFilesActions.retrievedSelectedDataFileId({ selectedDataFileId })
         )
       );
   }
