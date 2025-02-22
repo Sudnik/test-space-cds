@@ -1,5 +1,5 @@
 export interface AppInputData {
-  id: '';
+  index: number;
   category: string;
   value: number;
 }

@@ -8,9 +8,10 @@ import { FileUploaderComponent } from '../file-uploader/file-uploader.component'
 
 import { Store } from '@ngrx/store';
 import {
-  selectDataFileCollection,
+  selectSelectedDataFile,
   selectDataFiles,
   selectNewFileId,
+  selectDataContent,
 } from '../reducers/data-files.selectors';
 import {
   DataFilesActions,
@@ -33,7 +34,7 @@ import { DataFile } from '../files-table/data-files.model';
 export class FilesPanelComponent implements OnInit {
   visible: boolean = false;
   dataFiles$;
-  dataFileCollection$;
+  selectedDataFile$;
   newFileId!: number;
 
   constructor(
@@ -41,26 +42,32 @@ export class FilesPanelComponent implements OnInit {
     private store: Store
   ) {
     this.dataFiles$ = this.store.select(selectDataFiles);
-    this.dataFileCollection$ = this.store.select(selectDataFileCollection);
+    this.selectedDataFile$ = this.store.select(selectSelectedDataFile);
+    this.store.select(selectDataContent).subscribe((dataContent) => {
+      let tmp = dataContent;
+    });
+
     this.store.select(selectNewFileId).subscribe((dataFileId) => {
       this.newFileId = dataFileId;
     });
   }
 
   onAdd(dataFile: DataFile) {
-    let dataFileId = this.newFileId;
-    dataFile.dataFileId = dataFileId;
-    this.store.dispatch(DataFilesApiActions.addDataFile({ dataFile }));
-    this.store.dispatch(DataFilesActions.addDataFile({ dataFileId }));
+    let selectedDataFileId = this.newFileId;
+    dataFile.dataFileId = selectedDataFileId;
+
+    this.store.dispatch(DataFilesActions.addDataFile({ dataFile }));
     this.dataFilesService.addDataFile(dataFile);
+
+    this.onSelect(selectedDataFileId);
   }
 
-  onGet(dataFileId: number) {
-    this.store.dispatch(DataFilesActions.getDataFile({ dataFileId }));
-  }
-
-  onRemove(dataFileId: number) {
-    this.store.dispatch(DataFilesActions.removeDataFile({ dataFileId }));
+  onSelect(selectedDataFileId: number) {
+    this.store.dispatch(
+      DataFilesActions.setSelectedDataFileId({ selectedDataFileId })
+    );
+    this.dataFilesService.setSelectedDataFileId(selectedDataFileId);
+    this.getFileContext(selectedDataFileId);
   }
 
   ngOnInit() {
@@ -74,9 +81,23 @@ export class FilesPanelComponent implements OnInit {
 
     this.dataFilesService
       .getSelectedDataFileId()
-      .subscribe((selectedDataFileId) =>
+      .subscribe((selectedDataFileId) => {
         this.store.dispatch(
-          DataFilesActions.retrievedSelectedDataFileId({ selectedDataFileId })
+          DataFilesApiActions.retrievedSelectedDataFileId({
+            selectedDataFileId,
+          })
+        );
+
+        this.getFileContext(selectedDataFileId);
+      });
+  }
+
+  getFileContext(selectedDataFileId: number) {
+    this.dataFilesService
+      .getDataContent(selectedDataFileId)
+      .subscribe((dataContent) =>
+        this.store.dispatch(
+          DataFilesApiActions.retrievedDataFileContent({ dataContent })
         )
       );
   }

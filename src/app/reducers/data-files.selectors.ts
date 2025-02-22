@@ -1,21 +1,25 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { DataFileHeader } from '../files-table/data-file-headers.model';
+import { AppInputData } from '../files-table/app-input-data.model';
 
 const maxFilesCount = 5;
 
 export const selectDataFiles =
-  createFeatureSelector<ReadonlyArray<DataFileHeader>>('dataFiles');
+  createFeatureSelector<Array<DataFileHeader>>('dataFiles');
 
-export const selectCollectionState =
-  createFeatureSelector<ReadonlyArray<number>>('collection');
+export const selectSelectedDataFileId =
+  createFeatureSelector<number>('selectedDataFileId');
 
-export const selectDataFileCollection = createSelector(
+export const selectDataContent =
+  createFeatureSelector<Array<AppInputData>>('dataContent');
+
+export const selectSelectedDataFile = createSelector(
   selectDataFiles,
-  selectCollectionState,
-  (dataFiles, collection) => {
-    return collection.map(
-      (id) => dataFiles.find((dataFile) => dataFile.dataFileId === id)!
-    );
+  selectSelectedDataFileId,
+  (dataFiles, selectedDataFileId) => {
+    return dataFiles.find(
+      (dataFile) => dataFile.dataFileId === selectedDataFileId
+    )!;
   }
 );
 
@@ -24,10 +28,9 @@ export const selectNewFileId = createSelector(selectDataFiles, (dataFiles) => {
 
   if (stateCount == maxFilesCount) {
     return dataFiles[0].dataFileId;
-    //dataFiles.shift();
-  } else if (stateCount > 0 && stateCount < maxFilesCount) {
+  } else if (stateCount >= 0 && stateCount < maxFilesCount) {
     return stateCount + 1;
-  } else {
-    return 1;
   }
+
+  throw new Error('Incorrect NewFileId!');
 });

@@ -1,35 +1,50 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-//import { map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DataFile } from './data-files.model';
 import { DataFileHeader } from './data-file-headers.model';
 import { AppInputData } from './app-input-data.model';
 
 const maxFilesCount = 5;
 const localStorageFiles = 'fileTable';
+const localStorageSelectedId = 'selectedDataFileId';
 
 @Injectable({ providedIn: 'root' })
 export class DataFilesService {
+  getSelectedDataFileId(): Observable<number> {
+    let item = localStorage.getItem(localStorageSelectedId);
 
-  getSelectedDataFileId(): Observable<Array<number>> {
-    let item = localStorage.getItem(localStorageFiles);
+    return item ? of(parseInt(item)) : of(1);
+  }
 
-    if (item) {
-      return of([parseInt(item)]);
+  setSelectedDataFileId(selectedDataFileId: number) {
+    localStorage.setItem(localStorageSelectedId, selectedDataFileId.toString());
+  }
+
+  getDataContent(selectedDataFileId: number): Observable<Array<AppInputData>> {
+    let jsonString = localStorage.getItem(selectedDataFileId.toString());
+
+    if (jsonString) {
+      let jsonObject = JSON.parse(jsonString) as AppInputData[];
+      jsonObject.map((item, i) => {
+        item.index = i;
+        return item;
+      });
+      return of(jsonObject);
     }
 
     return of([]);
   }
 
   getDataFiles(): Observable<Array<DataFileHeader>> {
-    let jsonObject = new Array<DataFileHeader>();
     let jsonString = localStorage.getItem(localStorageFiles);
 
     if (jsonString) {
-      jsonObject = JSON.parse(jsonString) as DataFileHeader[];
+      let jsonObject = JSON.parse(jsonString) as DataFileHeader[];
+      return of(jsonObject);
     }
 
-    return of(jsonObject);
+    return of([]);
   }
 
   addDataFile(jsonFile: DataFile) {
