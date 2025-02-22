@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PrimeNgVerifyComponent } from './prime-ng-verify.component';
+import { D3BarChartComponent } from './d3-bar-chart.component';
 
-describe('PrimeNgVerifyComponent', () => {
-  let component: PrimeNgVerifyComponent;
-  let fixture: ComponentFixture<PrimeNgVerifyComponent>;
+describe('D3BarChartComponent', () => {
+  let component: D3BarChartComponent;
+  let fixture: ComponentFixture<D3BarChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PrimeNgVerifyComponent]
+      imports: [D3BarChartComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PrimeNgVerifyComponent);
+    fixture = TestBed.createComponent(D3BarChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

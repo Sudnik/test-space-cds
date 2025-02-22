@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   TableModule,
   TableRowSelectEvent,
-  TableRowUnSelectEvent,
 } from 'primeng/table';
 import { DataFileHeader } from './data-file-headers.model';
 
@@ -18,19 +17,9 @@ export class FilesTableComponent implements OnInit {
   @Output() fileSelected = new EventEmitter<number>();
 
   ngOnInit(): void {
-    console.log(
-      `ONINIT: 
-      selectedFile=[${this.selectedFile}]
-      files=[${this.files}]`
-    );
   }
 
   onRowSelect(event: TableRowSelectEvent) {
     this.fileSelected.emit(event.data.dataFileId);
-
-    console.log(
-      `onRowSelect: event.data.dataFileId=[${event.data.dataFileId}], 
-      this.selectedFile.dataFileId=[${this.selectedFile.dataFileId}]`
-    );
   }
 }

@@ -34,7 +34,6 @@ export class FileUploaderComponent {
   }
 
   onSelect(event: FileSelectEvent) {
-    console.log('onSelect event!');
   }
 
   onStartUpload(event: FileUploadHandlerEvent) {

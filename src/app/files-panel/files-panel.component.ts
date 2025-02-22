@@ -11,7 +11,6 @@ import {
   selectSelectedDataFile,
   selectDataFiles,
   selectNewFileId,
-  selectDataContent,
 } from '../reducers/data-files.selectors';
 import {
   DataFilesActions,
@@ -43,9 +42,6 @@ export class FilesPanelComponent implements OnInit {
   ) {
     this.dataFiles$ = this.store.select(selectDataFiles);
     this.selectedDataFile$ = this.store.select(selectSelectedDataFile);
-    this.store.select(selectDataContent).subscribe((dataContent) => {
-      let tmp = dataContent;
-    });
 
     this.store.select(selectNewFileId).subscribe((dataFileId) => {
       this.newFileId = dataFileId;
