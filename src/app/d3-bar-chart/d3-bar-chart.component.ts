@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { Store } from '@ngrx/store';
 import { selectDataContent } from '../reducers/data-files.selectors';
