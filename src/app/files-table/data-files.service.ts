@@ -4,13 +4,25 @@ import { map } from 'rxjs/operators';
 import { DataFile } from './data-files.model';
 import { DataFileHeader } from './data-file-headers.model';
 import { AppInputData } from './app-input-data.model';
+import { FiltersState } from '../data-filters/filters-state.model';
 
 const maxFilesCount = 5;
 const localStorageFiles = 'fileTable';
 const localStorageSelectedId = 'selectedDataFileId';
+const localStorageFiltersState = 'filtersState';
 
 @Injectable({ providedIn: 'root' })
 export class DataFilesService {
+  setFiltersState(filtersState: FiltersState) {
+    let json = JSON.stringify(filtersState);
+    localStorage.setItem(localStorageFiltersState, json);
+  }
+
+  getFiltersState(): Observable<FiltersState> {
+    let json = localStorage.getItem(localStorageFiltersState);
+    return of(JSON.parse(json!));
+  }
+
   getSelectedDataFileId(): Observable<number> {
     let item = localStorage.getItem(localStorageSelectedId);
 

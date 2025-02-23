@@ -9,6 +9,7 @@ import { provideStore } from '@ngrx/store';
 import { dataFilesReducer } from './reducers/data-files.reducer';
 import { selectedDataFileIdReducer } from './reducers/selected-data-file-id.reducer';
 import { dataContentReducer } from './reducers/data-content.reducer';
+import { filtersStateReducer } from './reducers/filters-state.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +25,8 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       dataFiles: dataFilesReducer,
       selectedDataFileId: selectedDataFileIdReducer,
-      dataContent: dataContentReducer
+      dataContent: dataContentReducer,
+      filtersState: filtersStateReducer,
     }),
   ],
 };

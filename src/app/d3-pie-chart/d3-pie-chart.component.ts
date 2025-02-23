@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { AppInputData } from '../files-table/app-input-data.model';
 import { Store } from '@ngrx/store';
-import { selectDataContent } from '../reducers/data-files.selectors';
+import { selectDataContent, selectFilteredDataContent } from '../reducers/data-files.selectors';
 
 @Component({
   selector: 'app-d3-pie-chart',
@@ -21,8 +21,13 @@ export class D3PieChartComponent implements OnInit {
   constructor(private store: Store, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.store.select(selectDataContent).subscribe((dataContent) => {
-      this.dataSource = dataContent;
+    // this.store.select(selectDataContent).subscribe((dataContent) => {
+    //   this.dataSource = dataContent;
+    //   this.initChart();
+    // });
+
+    this.store.select(selectFilteredDataContent).subscribe((filteredDataContent) => {
+      this.dataSource = filteredDataContent;
       this.initChart();
     });
   }

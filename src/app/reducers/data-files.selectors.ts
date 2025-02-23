@@ -1,6 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { DataFileHeader } from '../files-table/data-file-headers.model';
 import { AppInputData } from '../files-table/app-input-data.model';
+import { FiltersState } from '../data-filters/filters-state.model';
 
 const maxFilesCount = 5;
 
@@ -12,6 +13,9 @@ export const selectSelectedDataFileId =
 
 export const selectDataContent =
   createFeatureSelector<Array<AppInputData>>('dataContent');
+
+export const selectFiltersState =
+  createFeatureSelector<FiltersState>('filtersState');
 
 export const selectSelectedDataFile = createSelector(
   selectDataFiles,
@@ -34,3 +38,26 @@ export const selectNewFileId = createSelector(selectDataFiles, (dataFiles) => {
 
   throw new Error('Incorrect NewFileId!');
 });
+
+export const selectFilteredDataContent = createSelector(
+  selectFiltersState,
+  selectDataContent,
+  (filtersState, dataContent) => {
+    if (filtersState.isCategoriesGrouping) {
+    }
+
+    if (filtersState.isAlphabeticalSorting) {
+      let buffer: any = dataContent.slice(0);
+
+      return buffer.sort((a: any, b: any) =>
+        a.category.localeCompare(b.category)
+      );
+    }
+    else {
+      return dataContent;
+    }
+
+    if (filtersState.isMinValueHide) {
+    }
+  }
+);

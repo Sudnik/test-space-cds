@@ -1,5 +1,8 @@
 <p-menubar [model]="items" [style]="{ marginBottom: 'var(--elem-padding)' }">
   <ng-template #start>
-	<app-files-panel></app-files-panel>
+    <app-files-panel></app-files-panel>
+  </ng-template>
+  <ng-template #item let-item let-root="root">
+    <app-data-filters></app-data-filters>
   </ng-template>
 </p-menubar>

@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { DataFilesApiActions } from './data-files.actions';
+import { DataFilesActions, DataFilesApiActions } from './data-files.actions';
 import { AppInputData } from '../files-table/app-input-data.model';
 
 export const initialState: Array<AppInputData> = [];
