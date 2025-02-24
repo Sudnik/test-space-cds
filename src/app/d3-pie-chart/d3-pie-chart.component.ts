@@ -1,8 +1,11 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { AppInputData } from '../files-table/app-input-data.model';
 import { Store } from '@ngrx/store';
-import { selectDataContent, selectFilteredDataContent } from '../reducers/data-files.selectors';
+import {
+  selectDataContent,
+  selectFilteredDataContent,
+} from '../reducers/data-files.selectors';
 
 @Component({
   selector: 'app-d3-pie-chart',
@@ -10,7 +13,7 @@ import { selectDataContent, selectFilteredDataContent } from '../reducers/data-f
   templateUrl: './d3-pie-chart.component.html',
   styleUrl: './d3-pie-chart.component.less',
 })
-export class D3PieChartComponent implements OnInit {
+export class D3PieChartComponent implements OnInit, OnDestroy {
   dataSource!: any;
   width = 928;
   height = Math.min(this.width, 500);
@@ -20,16 +23,17 @@ export class D3PieChartComponent implements OnInit {
 
   constructor(private store: Store, private elementRef: ElementRef) {}
 
-  ngOnInit(): void {
-    // this.store.select(selectDataContent).subscribe((dataContent) => {
-    //   this.dataSource = dataContent;
-    //   this.initChart();
-    // });
+  ngOnDestroy(): void {
+    this.clearSvgContainer();
+  }
 
-    this.store.select(selectFilteredDataContent).subscribe((filteredDataContent) => {
-      this.dataSource = filteredDataContent;
-      this.initChart();
-    });
+  ngOnInit(): void {
+    this.store
+      .select(selectFilteredDataContent)
+      .subscribe((filteredDataContent) => {
+        this.dataSource = filteredDataContent;
+        this.initChart();
+      });
   }
 
   private initChart() {
@@ -46,8 +50,15 @@ export class D3PieChartComponent implements OnInit {
       );
 
     this.createPieLayoutAndArcs();
-    let svg = this.createSvgContainer();
+    let svg = this.setupSvgContainer();
     this.drawPieChart(svg, color);
+  }
+
+  private clearSvgContainer() {
+    d3.select(this.elementRef.nativeElement)
+      .select('.chart')
+      .selectAll('*')
+      .remove();
   }
 
   private createPieLayoutAndArcs() {
@@ -70,12 +81,14 @@ export class D3PieChartComponent implements OnInit {
     this.arcs = pie(this.dataSource);
   }
 
-  private createSvgContainer(): d3.Selection<
+  private setupSvgContainer(): d3.Selection<
     d3.BaseType,
     unknown,
     null,
     undefined
   > {
+    this.clearSvgContainer();
+    
     return d3
       .select(this.elementRef.nativeElement)
       .select('.chart')

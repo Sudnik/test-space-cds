@@ -1,7 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { Store } from '@ngrx/store';
-import { selectDataContent } from '../reducers/data-files.selectors';
+import {
+  selectDataContent,
+  selectFilteredDataContent,
+} from '../reducers/data-files.selectors';
 import { AppInputData } from '../files-table/app-input-data.model';
 
 @Component({
@@ -26,10 +29,12 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.store.select(selectDataContent).subscribe((dataContent) => {
-      this.dataSource = dataContent;
-      this.initChart();
-    });
+    this.store
+      .select(selectFilteredDataContent)
+      .subscribe((filteredDataContent) => {
+        this.dataSource = filteredDataContent;
+        this.initChart();
+      });
   }
 
   ngOnDestroy(): void {
@@ -47,9 +52,10 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .domain([0, d3.max(this.dataSource, (d) => d.value)!])
       .range([this.marginLeft, this.width - this.marginRight]);
 
+    //.domain(d3.sort(this.dataSource, (d) => -d.value).map((d) => d.category))
     this.y = d3
       .scaleBand()
-      .domain(d3.sort(this.dataSource, (d) => -d.value).map((d) => d.category))
+      .domain(this.dataSource.map((d) => d.category))
       .rangeRound([this.marginTop, this.height - this.marginBottom])
       .padding(0.1);
 

@@ -43,21 +43,35 @@ export const selectFilteredDataContent = createSelector(
   selectFiltersState,
   selectDataContent,
   (filtersState, dataContent) => {
+    let buffer = dataContent.slice(0);
+
     if (filtersState.isCategoriesGrouping) {
+      const categorySums = buffer.reduce((acc: any, obj: any) => {
+        if (acc[obj.category]) {
+          acc[obj.category] += obj.value;
+        } else {
+          acc[obj.category] = obj.value;
+        }
+        return acc;
+      }, {});
+
+      buffer = Object.keys(categorySums).map((category) => ({
+        index: categorySums['index'],
+        category: category,
+        value: categorySums[category],
+      }));
     }
 
     if (filtersState.isAlphabeticalSorting) {
-      let buffer: any = dataContent.slice(0);
-
-      return buffer.sort((a: any, b: any) =>
-        a.category.localeCompare(b.category)
-      );
-    }
-    else {
-      return dataContent;
+      buffer.sort((a: any, b: any) => a.category.localeCompare(b.category));
     }
 
     if (filtersState.isMinValueHide) {
+      buffer = buffer.filter(
+        (item) => item.value !== Math.min(...buffer.map((item) => item.value))
+      );
     }
+
+    return buffer;
   }
 );

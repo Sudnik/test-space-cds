@@ -1,13 +1,13 @@
 <div class="data-filters-class">
   <div>
     <p-checkbox
-      [(ngModel)]="isMinValueHide"
-      inputId="min-value-hide"
+      [(ngModel)]="isCategoriesGrouping"
+      inputId="categories-grouping"
       (onChange)="onChange()"
       size="large"
       binary="true"
     />
-    <label for="min-value-hide">Исключить мин. группу</label>
+    <label for="categories-grouping">Сгруппировать</label>
   </div>
   <div>
     <p-checkbox
@@ -21,12 +21,12 @@
   </div>
   <div>
     <p-checkbox
-      [(ngModel)]="isCategoriesGrouping"
-      inputId="categories-grouping"
+      [(ngModel)]="isMinValueHide"
+      inputId="min-value-hide"
       (onChange)="onChange()"
       size="large"
       binary="true"
     />
-    <label for="categories-grouping">Сгруппировать</label>
+    <label for="min-value-hide">Исключить мин. группу</label>
   </div>
 </div>
