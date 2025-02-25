@@ -1,5 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ChartTooltipComponent } from '../chart-tooltip/chart-tooltip.component';
 import { Store } from '@ngrx/store';
 import {
   selectDataContent,
@@ -9,7 +11,7 @@ import { AppInputData } from '../files-table/app-input-data.model';
 
 @Component({
   selector: 'app-d3-bar-chart',
-  imports: [],
+  providers: [DialogService],
   templateUrl: './d3-bar-chart.component.html',
   styleUrl: './d3-bar-chart.component.less',
 })
@@ -25,10 +27,18 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
   x!: d3.ScaleLinear<number, number, never>;
   y!: d3.ScaleBand<string>;
   format!: (d: d3.NumberValue) => string;
+  ref: DynamicDialogRef | undefined;
 
-  constructor(private store: Store, private elementRef: ElementRef) {}
+  constructor(
+    private store: Store,
+    private elementRef: ElementRef,
+    public dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
+    (window as any)['showTooltip'] = this.showTooltip.bind(this);
+    (window as any)['hideTooltip'] = this.hideTooltip.bind(this);
+
     this.store
       .select(selectFilteredDataContent)
       .subscribe((filteredDataContent) => {
@@ -102,7 +112,13 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .attr('x', this.x(0))
       .attr('y', (d) => this.y(d.category)!)
       .attr('width', (d) => this.x(d.value) - this.x(0))
-      .attr('height', this.y.bandwidth());
+      .attr('height', this.y.bandwidth())
+      .attr(
+        'onmouseover',
+        (d: any) =>
+          `window["showTooltip"]('${d.category}:${d.value}')`
+      )
+      .attr('onmouseout', 'window["hideTooltip"]()');
   }
 
   private addBarsValues(
@@ -141,5 +157,22 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .append('g')
       .attr('transform', `translate(${this.marginLeft},0)`)
       .call(d3.axisLeft(this.y).tickSizeOuter(0));
+  }
+
+  showTooltip(catData: any) {
+    let data = catData.split(':');
+
+    this.ref = this.dialogService.open(ChartTooltipComponent, {
+      inputValues: {
+        categoryValue: data[1],
+      },
+      focusOnShow: false,
+      modal: false,
+      header: `Category ${data[0]}`,
+    });
+  }
+
+  hideTooltip() {
+    this.ref?.close();
   }
 }

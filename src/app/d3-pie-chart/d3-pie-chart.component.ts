@@ -1,17 +1,15 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-import { AppInputData } from '../files-table/app-input-data.model';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ChartTooltipComponent } from '../chart-tooltip/chart-tooltip.component';
 import { Store } from '@ngrx/store';
-import {
-  selectDataContent,
-  selectFilteredDataContent,
-} from '../reducers/data-files.selectors';
+import { selectFilteredDataContent } from '../reducers/data-files.selectors';
 
 @Component({
   selector: 'app-d3-pie-chart',
-  imports: [],
   templateUrl: './d3-pie-chart.component.html',
   styleUrl: './d3-pie-chart.component.less',
+  providers: [DialogService],
 })
 export class D3PieChartComponent implements OnInit, OnDestroy {
   dataSource!: any;
@@ -20,14 +18,22 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
   arc: any;
   arcs: any;
   arcLabel: any;
+  ref: DynamicDialogRef | undefined;
 
-  constructor(private store: Store, private elementRef: ElementRef) {}
+  constructor(
+    private store: Store,
+    private elementRef: ElementRef,
+    public dialogService: DialogService
+  ) {}
 
   ngOnDestroy(): void {
     this.clearSvgContainer();
   }
 
   ngOnInit(): void {
+    (window as any)['showTooltip'] = this.showTooltip.bind(this);
+    (window as any)['hideTooltip'] = this.hideTooltip.bind(this);
+
     this.store
       .select(selectFilteredDataContent)
       .subscribe((filteredDataContent) => {
@@ -88,7 +94,7 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
     undefined
   > {
     this.clearSvgContainer();
-    
+
     return d3
       .select(this.elementRef.nativeElement)
       .select('.chart')
@@ -113,11 +119,12 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
       .join('path')
       .attr('fill', (d: any) => color(d.data.category))
       .attr('d', this.arc)
-      .append('title')
-      .text(
+      .attr(
+        'onmouseover',
         (d: any) =>
-          `${d.data.category}: ${d.data.value.toLocaleString('en-US')}`
-      );
+          `window["showTooltip"]('${d.data.category}:${d.data.value}')`
+      )
+      .attr('onmouseout', 'window["hideTooltip"]()');
 
     // Create a new arc generator to place a label close to the edge.
     // The label shows the value if there is enough room.
@@ -144,5 +151,22 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
           .attr('fill-opacity', 0.7)
           .text((d: any) => d.data.value.toLocaleString('en-US'))
       );
+  }
+
+  showTooltip(catData: any) {
+    let data = catData.split(':');
+
+    this.ref = this.dialogService.open(ChartTooltipComponent, {
+      inputValues: {
+        categoryValue: data[1]
+      },
+      focusOnShow: false,
+      modal: false,
+      header: `Category ${data[0]}`,
+    });
+  }
+
+  hideTooltip() {
+    this.ref?.close();
   }
 }
