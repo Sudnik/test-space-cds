@@ -3,10 +3,7 @@ import * as d3 from 'd3';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChartTooltipComponent } from '../chart-tooltip/chart-tooltip.component';
 import { Store } from '@ngrx/store';
-import {
-  selectDataContent,
-  selectFilteredDataContent,
-} from '../reducers/data-files.selectors';
+import { selectFilteredDataContent } from '../reducers/data-files.selectors';
 import { AppInputData } from '../files-table/app-input-data.model';
 
 @Component({
@@ -26,7 +23,6 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
   height!: number;
   x!: d3.ScaleLinear<number, number, never>;
   y!: d3.ScaleBand<string>;
-  format!: (d: d3.NumberValue) => string;
   ref: DynamicDialogRef | undefined;
 
   constructor(
@@ -36,8 +32,8 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    (window as any)['showTooltip'] = this.showTooltip.bind(this);
-    (window as any)['hideTooltip'] = this.hideTooltip.bind(this);
+    (window as any)['showBarTooltip'] = this.showBarTooltip.bind(this);
+    (window as any)['hideBarTooltip'] = this.hideBarTooltip.bind(this);
 
     this.store
       .select(selectFilteredDataContent)
@@ -62,15 +58,18 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .domain([0, d3.max(this.dataSource, (d) => d.value)!])
       .range([this.marginLeft, this.width - this.marginRight]);
 
-    //.domain(d3.sort(this.dataSource, (d) => -d.value).map((d) => d.category))
     this.y = d3
       .scaleBand()
       .domain(this.dataSource.map((d) => d.category))
       .rangeRound([this.marginTop, this.height - this.marginBottom])
       .padding(0.1);
 
-    // this.format = this.x.tickFormat(20, '%');
-    this.format = this.x.tickFormat(20, '');
+    d3.formatDefaultLocale({
+      decimal: '.',
+      thousands: ',',
+      grouping: [3],
+      currency: ['$', ''],
+    });
 
     let svg = this.setupSvgContainer();
     this.addBars(svg);
@@ -115,10 +114,9 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .attr('height', this.y.bandwidth())
       .attr(
         'onmouseover',
-        (d: any) =>
-          `window["showTooltip"]('${d.category}:${d.value}')`
+        (d: any) => `window["showBarTooltip"]('${d.category}:${d.value}')`
       )
-      .attr('onmouseout', 'window["hideTooltip"]()');
+      .attr('onmouseout', 'window["hideBarTooltip"]()');
   }
 
   private addBarsValues(
@@ -135,7 +133,7 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .attr('y', (d) => this.y(d.category)! + this.y.bandwidth() / 2)
       .attr('dy', '0.35em')
       .attr('dx', -4)
-      .text((d) => this.format(d.value))
+      .text((d) => d.value.toLocaleString('en-US'))
       .call((text) =>
         text
           .filter((d) => this.x(d.value) - this.x(0) < 20) // short bars
@@ -149,8 +147,7 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
     svg
       .append('g')
       .attr('transform', `translate(0,${this.marginTop})`)
-      //.call(d3.axisTop(this.x).ticks(this.width / 80, '%'))
-      .call(d3.axisTop(this.x).ticks(20, ''))
+      .call(d3.axisTop(this.x).ticks(15))
       .call((g) => g.select('.domain').remove());
 
     svg
@@ -159,7 +156,8 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
       .call(d3.axisLeft(this.y).tickSizeOuter(0));
   }
 
-  showTooltip(catData: any) {
+  showBarTooltip(catData: any) {
+    this.ref?.destroy();
     let data = catData.split(':');
 
     this.ref = this.dialogService.open(ChartTooltipComponent, {
@@ -172,7 +170,7 @@ export class D3BarChartComponent implements OnInit, OnDestroy {
     });
   }
 
-  hideTooltip() {
+  hideBarTooltip() {
     this.ref?.close();
   }
 }

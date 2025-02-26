@@ -1,23 +1,13 @@
 <div class="data-filters-class">
   <div>
     <p-checkbox
-      [(ngModel)]="isCategoriesGrouping"
-      inputId="categories-grouping"
-      (onChange)="onChange()"
-      size="large"
-      binary="true"
-    />
-    <label for="categories-grouping">Сгруппировать</label>
-  </div>
-  <div>
-    <p-checkbox
       [(ngModel)]="isAlphabeticalSorting"
       inputId="alphabetical-sorting"
       (onChange)="onChange()"
       size="large"
       binary="true"
     />
-    <label for="alphabetical-sorting">Отсортировать</label>
+    <label for="alphabetical-sorting">Sort Categories</label>
   </div>
   <div>
     <p-checkbox
@@ -27,6 +17,6 @@
       size="large"
       binary="true"
     />
-    <label for="min-value-hide">Исключить мин. группу</label>
+    <label for="min-value-hide">Exclude Minimum</label>
   </div>
 </div>

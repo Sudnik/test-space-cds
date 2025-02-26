@@ -31,8 +31,8 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    (window as any)['showTooltip'] = this.showTooltip.bind(this);
-    (window as any)['hideTooltip'] = this.hideTooltip.bind(this);
+    (window as any)['showPieTooltip'] = this.showPieTooltip.bind(this);
+    (window as any)['hidePieTooltip'] = this.hidePieTooltip.bind(this);
 
     this.store
       .select(selectFilteredDataContent)
@@ -122,9 +122,9 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
       .attr(
         'onmouseover',
         (d: any) =>
-          `window["showTooltip"]('${d.data.category}:${d.data.value}')`
+          `window["showPieTooltip"]('${d.data.category}:${d.data.value}')`
       )
-      .attr('onmouseout', 'window["hideTooltip"]()');
+      .attr('onmouseout', 'window["hidePieTooltip"]()');
 
     // Create a new arc generator to place a label close to the edge.
     // The label shows the value if there is enough room.
@@ -153,20 +153,21 @@ export class D3PieChartComponent implements OnInit, OnDestroy {
       );
   }
 
-  showTooltip(catData: any) {
-    let data = catData.split(':');
+  showPieTooltip(catData: any) {
+    this.ref?.destroy();
+    catData = catData.split(':');
 
     this.ref = this.dialogService.open(ChartTooltipComponent, {
       inputValues: {
-        categoryValue: data[1]
+        categoryValue: catData[1],
       },
-      focusOnShow: false,
+      //focusOnShow: false,
       modal: false,
-      header: `Category ${data[0]}`,
+      header: `Category ${catData[0]}`,
     });
   }
 
-  hideTooltip() {
+  hidePieTooltip() {
     this.ref?.close();
   }
 }

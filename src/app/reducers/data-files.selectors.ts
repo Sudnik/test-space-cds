@@ -44,23 +44,21 @@ export const selectFilteredDataContent = createSelector(
   selectDataContent,
   (filtersState, dataContent) => {
     let buffer = dataContent.slice(0);
+    
+    const categorySums = buffer.reduce((acc: any, obj: any) => {
+      if (acc[obj.category]) {
+        acc[obj.category] += obj.value;
+      } else {
+        acc[obj.category] = obj.value;
+      }
+      return acc;
+    }, {});
 
-    if (filtersState.isCategoriesGrouping) {
-      const categorySums = buffer.reduce((acc: any, obj: any) => {
-        if (acc[obj.category]) {
-          acc[obj.category] += obj.value;
-        } else {
-          acc[obj.category] = obj.value;
-        }
-        return acc;
-      }, {});
-
-      buffer = Object.keys(categorySums).map((category) => ({
-        index: categorySums['index'],
-        category: category,
-        value: categorySums[category],
-      }));
-    }
+    buffer = Object.keys(categorySums).map((category) => ({
+      index: categorySums['index'],
+      category: category,
+      value: categorySums[category],
+    }));
 
     if (filtersState.isAlphabeticalSorting) {
       buffer.sort((a: any, b: any) => a.category.localeCompare(b.category));

@@ -20,8 +20,7 @@ export class DataFiltersComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<FiltersState>();
   filtersState: FiltersState = {
     isMinValueHide: false,
-    isAlphabeticalSorting: false,
-    isCategoriesGrouping: false,
+    isAlphabeticalSorting: false
   };
   isCategoriesGrouping!: boolean;
   isAlphabeticalSorting!: boolean;
@@ -40,7 +39,6 @@ export class DataFiltersComponent implements OnInit {
     });
 
     this.store.select(selectFiltersState).subscribe((filters) => {
-      this.isCategoriesGrouping = filters.isCategoriesGrouping;
       this.isAlphabeticalSorting = filters.isAlphabeticalSorting;
       this.isMinValueHide = filters.isMinValueHide;
     });
@@ -49,8 +47,7 @@ export class DataFiltersComponent implements OnInit {
   onChange() {
     let filtersState: FiltersState = {
       isMinValueHide: this.isMinValueHide,
-      isAlphabeticalSorting: this.isAlphabeticalSorting,
-      isCategoriesGrouping: this.isCategoriesGrouping,
+      isAlphabeticalSorting: this.isAlphabeticalSorting
     };
 
     this.store.dispatch(DataFilesActions.setFiltersState({ filtersState }));

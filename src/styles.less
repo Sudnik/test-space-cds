@@ -2,22 +2,29 @@
 
 :root {
   --elem-padding: 8px;
+  --p-menubar-item-focus-background: #fff;
+  --p-menubar-item-focus-color: #000;
 }
 
 html,
 body {
-  // width: 100%;
-  // height: 100%;
   margin: 0;
-  // font-family: var(--p-font-family);
   font-family: Helvetica, Arial, sans-serif;
+  user-select: none;
 }
 
 body {
-  // overflow: hidden;
   padding: var(--elem-padding);
 }
 
 .p-overflow-hidden {
   padding-right: var(--elem-padding) !important;
+}
+
+.p-card {
+  margin-top: var(--elem-padding);
+}
+
+.p-button {
+  align-items: baseline;
 }

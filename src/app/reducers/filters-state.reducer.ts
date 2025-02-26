@@ -4,7 +4,6 @@ import { FiltersState } from '../data-filters/filters-state.model';
 
 export const initialState: FiltersState = {
   isAlphabeticalSorting: false,
-  isCategoriesGrouping: false,
   isMinValueHide: false,
 };
 

@@ -7,5 +7,9 @@ import { Component, Input } from '@angular/core';
   styleUrl: './chart-tooltip.component.less'
 })
 export class ChartTooltipComponent {
-  @Input() categoryValue!: number;
+  @Input() categoryValue!: string;
+
+  formattedValue() {
+    return parseInt(this.categoryValue).toLocaleString('en-US');   
+  }
 }

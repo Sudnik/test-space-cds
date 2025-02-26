@@ -60,11 +60,11 @@ export class DataFilesService {
   }
 
   addDataFile(jsonFile: DataFile) {
-    let dataFileHeader: DataFileHeader = {
-      dataFileId: jsonFile.dataFileId,
-      fileName: jsonFile.fileName,
-      uploadDate: jsonFile.uploadDate,
-    };
+    let dataFileHeader = new DataFileHeader(
+      jsonFile.dataFileId,
+      jsonFile.fileName,
+      jsonFile.uploadDate
+    );
     let fileContent = jsonFile.content;
 
     let newFileId = this.addDataFileHeader(dataFileHeader);

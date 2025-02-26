@@ -3,8 +3,6 @@ import { MessageService } from 'primeng/api';
 import {
   FileSelectEvent,
   FileUpload,
-  FileUploadErrorEvent,
-  FileUploadEvent,
   FileUploadHandlerEvent,
 } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,46 +20,61 @@ import { AppInputData } from '../files-table/app-input-data.model';
 export class FileUploaderComponent {
   @Output() uploadDone = new EventEmitter<DataFile>();
   fileReader = new FileReader();
-  file: DataFile = {
-    dataFileId: 0,
-    fileName: '',
-    uploadDate: new Date(),
-    content: [],
-  };
+  file = new DataFile(0, '', new Date(), []);
 
   constructor(private messageService: MessageService) {
     this.fileReader.onload = this.OnLoadFile.bind(this);
   }
 
-  onSelect(event: FileSelectEvent) {
-  }
+  onSelect(event: FileSelectEvent) {}
 
   onStartUpload(event: FileUploadHandlerEvent) {
-    this.file = {
-      dataFileId: 0,
-      fileName: event.files[0].name,
-      uploadDate: new Date(),
-      content: [],
-    };
-
+    this.file = new DataFile(0, event.files[0].name, new Date(), []);
     this.fileReader.readAsText(event.files[0]);
-
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Success',
-      detail: 'File Uploaded with Auto Mode',
-    });
   }
 
   private OnLoadFile(event: ProgressEvent<FileReader>) {
-    const jsonFileString = event.target?.result as string;
-    const jsonObject = JSON.parse(jsonFileString);
-    this.file.content = jsonObject as AppInputData[];
+    try {
+      const jsonFileString = event.target?.result as string;
+      const jsonObject = JSON.parse(jsonFileString);
 
-    this.uploadDone.emit(this.file);
+      if (this.isValidJson(jsonObject)) {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Success',
+          detail: "File Uploaded to browser's Local Storage",
+        });
+
+        this.file.content = jsonObject as AppInputData[];
+        this.uploadDone.emit(this.file);
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          "Invalid data format. File NOT Uploaded to browser's Local Storage!",
+      });
+    }
   }
 
-  onError(event: FileUploadErrorEvent) {
-    console.log('onError event!');
+  isValidJson(jsonObject: any) {
+    try {
+      if (
+        Array.isArray(jsonObject) &&
+        jsonObject.every(
+          (item) =>
+            item.hasOwnProperty('category') && item.hasOwnProperty('value')
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
   }
 }
