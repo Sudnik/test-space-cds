@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { DataFile } from './data-files.model';
 import { DataFileHeader } from './data-file-headers.model';
 import { AppInputData } from './app-input-data.model';
@@ -20,7 +19,7 @@ export class DataFilesService {
 
   getFiltersState(): Observable<FiltersState> {
     let json = localStorage.getItem(localStorageFiltersState);
-    return of(JSON.parse(json!));
+    return json ? of(JSON.parse(json!)) : of([]);
   }
 
   getSelectedDataFileId(): Observable<number> {
@@ -68,7 +67,13 @@ export class DataFilesService {
     let fileContent = jsonFile.content;
 
     let newFileId = this.addDataFileHeader(dataFileHeader);
-    this.addAppInputData(newFileId, fileContent);
+
+    try {
+      this.addAppInputData(newFileId, fileContent);
+    } catch (e) {
+      this.removeDataFileHeader(newFileId);
+      throw e;
+    }
   }
 
   private addDataFileHeader(dataFileHeader: DataFileHeader): number {
@@ -98,6 +103,16 @@ export class DataFilesService {
     localStorage.setItem(localStorageFiles, JSON.stringify(dataFileHeaders));
 
     return dataFileHeader.dataFileId;
+  }
+
+  removeDataFileHeader(newFileId: number) {
+    let filesHeadersJson = localStorage.getItem(localStorageFiles);
+
+    if (filesHeadersJson) {
+      let filesHeaders = JSON.parse(filesHeadersJson) as DataFileHeader[];
+      filesHeaders = filesHeaders.filter(header => header.dataFileId !== newFileId);
+      localStorage.setItem(localStorageFiles, JSON.stringify(filesHeaders));
+    }
   }
 
   private addAppInputData(fileId: number, fileData: AppInputData[]) {

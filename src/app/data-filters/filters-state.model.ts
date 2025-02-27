@@ -1,4 +1,6 @@
-export interface FiltersState {
-  isAlphabeticalSorting: boolean;
-  isMinValueHide: boolean;
+export class FiltersState {
+  constructor(
+    public isAlphabeticalSorting: boolean,
+    public isMinValueHide: boolean
+  ) {}
 }

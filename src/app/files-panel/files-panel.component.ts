@@ -17,16 +17,20 @@ import {
   DataFilesApiActions,
 } from '../reducers/data-files.actions';
 import { DataFile } from '../files-table/data-files.model';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-files-panel',
   imports: [
     CommonModule,
     DrawerModule,
+    ToastModule,
     ButtonModule,
     FilesTableComponent,
     FileUploaderComponent,
   ],
+  providers: [MessageService],
   templateUrl: './files-panel.component.html',
   styleUrl: './files-panel.component.less',
 })
@@ -37,6 +41,7 @@ export class FilesPanelComponent implements OnInit {
   newFileId!: number;
 
   constructor(
+    private messageService: MessageService,
     private dataFilesService: DataFilesService,
     private store: Store
   ) {
@@ -49,13 +54,29 @@ export class FilesPanelComponent implements OnInit {
   }
 
   onAdd(dataFile: DataFile) {
-    let selectedDataFileId = this.newFileId;
-    dataFile.dataFileId = selectedDataFileId;
+    try {
+      let selectedDataFileId = this.newFileId;
+      dataFile.dataFileId = selectedDataFileId;
 
-    this.store.dispatch(DataFilesActions.addDataFile({ dataFile }));
-    this.dataFilesService.addDataFile(dataFile);
+      this.dataFilesService.addDataFile(dataFile);
+      this.store.dispatch(DataFilesActions.addDataFile({ dataFile }));
+      this.onSelect(selectedDataFileId);
 
-    this.onSelect(selectedDataFileId);
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Success',
+        detail: "File Uploaded to browser's Local Storage",
+      });
+    } catch (e: any) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          `Invalid data format. File NOT Uploaded to browser's Local Storage!`,
+      });
+
+      console.log(e);
+    }
   }
 
   onSelect(selectedDataFileId: number) {
